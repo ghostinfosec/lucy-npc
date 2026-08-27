@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily Lucy origin check (jittered, pull only)
+
+[Timer]
+OnCalendar=*-*-* 04:17:00
+Persistent=true
+RandomizedDelaySec=45m
+
+[Install]
+WantedBy=timers.target

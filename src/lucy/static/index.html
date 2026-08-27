@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lucy</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <div class="table">
+    <svg class="wool" viewBox="0 0 72 80" aria-hidden="true">
+      <g fill="var(--coal)" stroke="var(--wool)" stroke-width="1.4" stroke-dasharray="2.2 2.6" stroke-linejoin="round">
+        <circle cx="26" cy="14" r="6" />
+        <circle cx="46" cy="14" r="6" />
+        <circle cx="36" cy="24" r="14" />
+        <ellipse cx="36" cy="54" rx="22" ry="18" />
+        <ellipse cx="22" cy="72" rx="8" ry="5" />
+        <ellipse cx="50" cy="72" rx="8" ry="5" />
+      </g>
+    </svg>
+    <div class="glass" aria-live="polite">
+      <p id="glass-place"></p>
+      <p id="glass-stats"></p>
+      <svg class="crack" viewBox="0 0 48 86" aria-hidden="true">
+        <path d="M38 4 L22 28 L30 40 L14 62 L20 82" fill="none" stroke="currentColor" stroke-width="0.7" />
+      </svg>
+    </div>
+  </div>
+
+  <div id="login" class="hidden">
+    <form id="login-form">
+      <label for="token">Phrase</label>
+      <input id="token" name="token" type="password" autocomplete="current-password" required />
+      <p id="err"></p>
+      <button type="submit">Open</button>
+    </form>
+  </div>
+
+  <div id="dash" class="hidden">
+    <header>
+      <div>
+        <strong>Lucy</strong>
+        <p id="who">in the chair</p>
+      </div>
+      <form id="logout-form"><button class="ghost" type="submit">Close</button></form>
+    </header>
+    <p id="tape" class="tape hidden"></p>
+    <div class="cards" id="cards"></div>
+    <p class="note" id="unit"></p>
+    <section>
+      <h2>Where she sat</h2>
+      <table>
+        <thead><tr><th>When</th><th></th><th>Place</th><th>Capture</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </section>
+    <section>
+      <h2>Who took a piece</h2>
+      <p class="note">This look. Host only. No query strings.</p>
+      <div class="split">
+        <table>
+          <thead><tr><th>Name</th><th></th></tr></thead>
+          <tbody id="vendors"></tbody>
+        </table>
+        <table>
+          <thead><tr><th>Host</th><th></th></tr></thead>
+          <tbody id="brokers"></tbody>
+        </table>
+      </div>
+    </section>
+    <section>
+      <h2>All looks</h2>
+      <p class="note" id="pile"></p>
+      <div class="split">
+        <table>
+          <thead><tr><th>Name</th><th></th></tr></thead>
+          <tbody id="pile-vendors"></tbody>
+        </table>
+        <table>
+          <thead><tr><th>Host</th><th></th></tr></thead>
+          <tbody id="pile-hosts"></tbody>
+        </table>
+      </div>
+    </section>
+    <section>
+      <h2>The costume</h2>
+      <p class="note" id="fp-present"></p>
+      <p class="note" id="fp-ua"></p>
+    </section>
+  </div>
+  <script src="/static/hatch.js"></script>
+</body>
+</html>

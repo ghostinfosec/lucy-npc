@@ -1,0 +1,30 @@
+{
+  "https_only": true,
+  "block_literals": [
+    "localhost",
+    "127.0.0.1",
+    "::1",
+    "0.0.0.0",
+    "169.254.169.254",
+    "metadata.google.internal",
+    "10.0.0.0/8",
+    "172.16.0.0/12",
+    "192.168.0.0/16"
+  ],
+  "hosts": [
+    "weather.com",
+    "www.weather.com",
+    "bbc.com",
+    "www.bbc.com",
+    "en.wikipedia.org",
+    "wikipedia.org",
+    "www.youtube.com",
+    "youtube.com",
+    "m.youtube.com",
+    "consent.youtube.com",
+    "www.reddit.com",
+    "reddit.com",
+    "www.allrecipes.com",
+    "allrecipes.com"
+  ]
+}

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="480" viewBox="0 0 900 480" role="img" aria-labelledby="t d">
+  <title id="t">Lucy fleet updates are pull only</title>
+  <desc id="d">GitHub origin in the center. Many Pis pull signed releases. No arrows from origin into the bodies for commands.</desc>
+  <style>
+    text { font-family: Georgia, serif; fill: #1a1410; }
+    .small { font-size: 12px; fill: #4a3b32; }
+    .label { font-size: 15px; }
+  </style>
+  <rect width="900" height="480" fill="#f2ead8"/>
+  <text class="label" x="40" y="36">A hundred Lucys</text>
+  <text class="small" x="40" y="56">They ask. Nothing is pushed into them but what they chose to pull.</text>
+
+  <rect x="360" y="180" width="180" height="90" rx="6" fill="#fff" stroke="#1a1410" stroke-width="2"/>
+  <text x="450" y="218" text-anchor="middle" class="label">origin repo</text>
+  <text x="450" y="238" text-anchor="middle" class="small">signed tags · SHA256 · cosign</text>
+  <text x="450" y="254" text-anchor="middle" class="small">GitHub / mirror</text>
+
+  <!-- pis -->
+  <g id="p1">
+    <circle cx="90" cy="140" r="28" fill="#c4b09a" stroke="#1a1410"/>
+    <text class="small" x="90" y="144" text-anchor="middle">Lucy</text>
+    <path d="M118 150 L358 210" stroke="#1a1410" stroke-width="1.5" marker-end="url(#a)"/>
+  </g>
+  <g>
+    <circle cx="90" cy="250" r="28" fill="#c4b09a" stroke="#1a1410"/>
+    <text class="small" x="90" y="254" text-anchor="middle">Lucy</text>
+    <path d="M118 250 L358 225" stroke="#1a1410" stroke-width="1.5" marker-end="url(#a)"/>
+  </g>
+  <g>
+    <circle cx="90" cy="360" r="28" fill="#c4b09a" stroke="#1a1410"/>
+    <text class="small" x="90" y="364" text-anchor="middle">Lucy</text>
+    <path d="M118 350 L358 250" stroke="#1a1410" stroke-width="1.5" marker-end="url(#a)"/>
+  </g>
+  <g>
+    <circle cx="810" cy="140" r="28" fill="#c4b09a" stroke="#1a1410"/>
+    <text class="small" x="810" y="144" text-anchor="middle">Lucy</text>
+    <path d="M782 150 L542 210" stroke="#1a1410" stroke-width="1.5" marker-end="url(#a)"/>
+  </g>
+  <g>
+    <circle cx="810" cy="250" r="28" fill="#c4b09a" stroke="#1a1410"/>
+    <text class="small" x="810" y="254" text-anchor="middle">Lucy</text>
+    <path d="M782 250 L542 225" stroke="#1a1410" stroke-width="1.5" marker-end="url(#a)"/>
+  </g>
+  <g>
+    <circle cx="810" cy="360" r="28" fill="#c4b09a" stroke="#1a1410"/>
+    <text class="small" x="810" y="364" text-anchor="middle">Lucy</text>
+    <path d="M782 350 L542 250" stroke="#1a1410" stroke-width="1.5" marker-end="url(#a)"/>
+  </g>
+
+  <rect x="300" y="390" width="300" height="54" rx="4" fill="#fff" stroke="#d4786a"/>
+  <text class="small" x="450" y="414" text-anchor="middle">No reverse arrow.</text>
+  <text class="small" x="450" y="432" text-anchor="middle">Origin cannot order, dump, or wake a body.</text>
+
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6" fill="none" stroke="#1a1410"/>
+    </marker>
+  </defs>
+</svg>

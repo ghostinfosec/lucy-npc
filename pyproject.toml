@@ -1,0 +1,31 @@
+[project]
+name = "lucy-ghost-zero"
+version = "0.1.0"
+description = "A stuffed animal that goes online. Live, boring, human-shaped sessions from a Raspberry Pi."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Northern Void, LLC" }]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest==8.3.5", "httpx==0.28.1"]
+live = ["playwright==1.49.1", "httpx==0.28.1"]
+
+[project.scripts]
+lucy-daemon = "lucy.daemon:main"
+lucy-update = "lucy.update:main"
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+lucy = ["static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

@@ -1,0 +1,11 @@
+[Unit]
+Description=Lucy pull-only update (no command channel)
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=-/etc/lucy/env
+ExecStart=/opt/lucy/.venv/bin/lucy-update
+# Default is --check (no consent). With LUCY_AUTO_UPDATE=git in /etc/lucy/env this
+# fetches origin and flips a slot. Signed/cosign is not implemented. Not a C2.

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="520" viewBox="0 0 880 520" role="img" aria-labelledby="t d">
+  <title id="t">Lucy hardware assembly</title>
+  <desc id="d">Side view: stuffed animal, phone in the lap, Pi in a back pocket, USB-C power through a foot, service hatch.</desc>
+  <style>
+    text { font-family: Georgia, serif; fill: #1a1410; }
+    .small { font-size: 12px; fill: #4a3b32; }
+    .label { font-size: 14px; }
+  </style>
+  <rect width="880" height="520" fill="#f2ead8"/>
+  <text class="label" x="40" y="36">Lucy  one body</text>
+  <text class="small" x="40" y="56">Side view. Wool omitted. Hatch at the back. Face stays intact.</text>
+
+  <!-- animal body -->
+  <ellipse cx="340" cy="280" rx="160" ry="150" fill="#c4b09a" stroke="#1a1410" stroke-width="2"/>
+  <ellipse cx="340" cy="140" rx="70" ry="62" fill="#c4b09a" stroke="#1a1410" stroke-width="2"/>
+  <text class="small" x="310" y="136">face</text>
+  <text class="small" x="308" y="152">(do not cut)</text>
+
+  <!-- phone -->
+  <rect x="288" y="210" width="70" height="128" rx="10" fill="#111" stroke="#1a1410"/>
+  <rect x="296" y="222" width="54" height="96" rx="4" fill="#2b221c"/>
+  <text class="small" x="372" y="250">retired phone</text>
+  <text class="small" x="372" y="266">or dummy glass</text>
+  <text class="small" x="372" y="282">session is the Pi</text>
+
+  <!-- pi pocket -->
+  <rect x="430" y="250" width="110" height="72" rx="4" fill="#d8cfc4" stroke="#1a1410" stroke-width="2" stroke-dasharray="5 3"/>
+  <rect x="448" y="266" width="74" height="42" rx="3" fill="#2e7d4f" stroke="#1a1410"/>
+  <text class="small" x="458" y="292" fill="#f2ead8">Pi 4/5</text>
+  <text class="small" x="548" y="270">back pocket</text>
+  <text class="small" x="548" y="286">air around SoC</text>
+
+  <!-- hatch -->
+  <rect x="500" y="340" width="90" height="28" rx="3" fill="#1a1410"/>
+  <text class="small" x="512" y="358" fill="#f2ead8">velcro hatch</text>
+
+  <!-- power -->
+  <path d="M500 310 C 560 330, 600 380, 640 430" fill="none" stroke="#1a1410" stroke-width="3"/>
+  <circle cx="640" cy="430" r="8" fill="#d4786a" stroke="#1a1410"/>
+  <text class="small" x="656" y="426">USB-C through</text>
+  <text class="small" x="656" y="442">a back foot</text>
+  <rect x="700" y="400" width="70" height="50" rx="4" fill="#fff" stroke="#1a1410"/>
+  <text class="small" x="710" y="430">wall PSU</text>
+
+  <!-- notes -->
+  <text class="small" x="40" y="470">1. Flash OS on the desk. 2. Prove live_public. 3. Then stuff her.</text>
+  <text class="small" x="40" y="490">Service hatch is for heat, SD, and the next slot. Not a face cut.</text>
+</svg>

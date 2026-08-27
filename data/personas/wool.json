@@ -1,0 +1,64 @@
+{
+  "name": "wool",
+  "timezone": "America/Detroit",
+  "locale": "en-US",
+  "viewport_width": 412,
+  "viewport_height": 915,
+  "device_scale_factor": 2.625,
+  "color_scheme": "light",
+  "user_agent": "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36",
+  "dwell_seconds": [4, 42],
+  "scroll_px": [320, 900],
+  "windows": [
+    {
+      "start_hour": 7,
+      "end_hour": 9,
+      "intensity": 0.35,
+      "surfaces": ["weather", "news"]
+    },
+    {
+      "start_hour": 11,
+      "end_hour": 13,
+      "intensity": 0.45,
+      "surfaces": ["recipe", "wikipedia", "youtube"]
+    },
+    {
+      "start_hour": 17,
+      "end_hour": 23,
+      "intensity": 0.7,
+      "surfaces": ["youtube", "reddit", "wikipedia", "news"]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "weather",
+      "kind": "weather",
+      "url": "https://weather.com/"
+    },
+    {
+      "id": "news",
+      "kind": "news",
+      "url": "https://www.bbc.com/news"
+    },
+    {
+      "id": "wikipedia",
+      "kind": "wiki",
+      "url": "https://en.wikipedia.org/wiki/Special:Random"
+    },
+    {
+      "id": "youtube",
+      "kind": "video",
+      "url": "https://www.youtube.com/results?search_query=lofi+hip+hop+radio"
+    },
+    {
+      "id": "reddit",
+      "kind": "feed",
+      "url": "https://www.reddit.com/r/aww/.rss"
+    },
+    {
+      "id": "recipe",
+      "kind": "food",
+      "url": "https://www.allrecipes.com/recipes/"
+    }
+  ]
+}

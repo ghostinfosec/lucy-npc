@@ -1,0 +1,15 @@
+.venv/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+logs/*.jsonl
+logs/*.sqlite
+playwright-log.txt
+.DS_Store
+storage_state.json
+.session/
+.dress/
