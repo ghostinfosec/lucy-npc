@@ -10,7 +10,7 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = ["pytest==8.3.5", "httpx==0.28.1"]
-live = ["playwright==1.49.1", "httpx==0.28.1"]
+live = ["playwright==1.62.0", "httpx==0.28.1"]
 
 [project.scripts]
 lucy-daemon = "lucy.daemon:main"
