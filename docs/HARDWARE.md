@@ -26,7 +26,7 @@ See [assembly.svg](assembly.svg). Short version:
 3. Seat the phone/screen in the lap or against the chest, facing out. Dummy glass is fine.
 4. Route USB-C out a back foot or a tagged "care label." Do not pierce the face.
 5. Close with a velcro service hatch. Label the hatch internally: `lucy /opt/lucy`.
-6. First boot on a desk, not inside the wool. Confirm `lucy-daemon` and a packet capture. Then dress her.
+6. First boot on a desk, not inside the wool. Confirm the hatch shows a look. Then dress her.
 
 ## Power and heat
 

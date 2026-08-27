@@ -1,4 +1,4 @@
-# Debian Bookworm ≈ Raspberry Pi OS userland. Dress rehearsal, not the animal.
+# Debian Bookworm ≈ Raspberry Pi OS userland. Desk image, not the animal.
 FROM debian:bookworm-slim
 
 RUN apt-get update \

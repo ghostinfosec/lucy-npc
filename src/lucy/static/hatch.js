@@ -94,7 +94,7 @@ async function paint() {
   } else if (!list.length) {
     tape.textContent = "No looks yet.";
   } else {
-    tape.textContent = "Rehearsal. No fetches.";
+    tape.textContent = looking ? "looking" : "still";
   }
 
   const liveCards = diaryLive
@@ -103,7 +103,7 @@ async function paint() {
   $("cards").innerHTML = liveCards.map(([k, v]) => `<div class="card"><span>${k}</span><b>${v}</b></div>`).join("");
   $("unit").textContent = diaryLive
     ? (fetches + " fetches. " + taken + " taken.")
-    : (m.unit || "Rehearsal. No fetches.");
+    : (m.unit || "No looks yet.");
   $("rows").innerHTML = list.slice().reverse().map((e) => {
     const cls = e.ok ? "ok" : "fail";
     const extra = e.extra || {};
@@ -114,7 +114,6 @@ async function paint() {
     let capture = "";
     if (rowFetches) capture = rowFetches + " fetches" + (rowTaken ? " · " + rowTaken + " taken" : "");
     else if (e.engine && String(e.engine).startsWith("live")) capture = e.engine;
-    else if (extra.rehearsal) capture = "rehearsal";
     return `<tr><td>${clock(e.ts)}</td><td>${act}</td><td class="url">${e.url || "—"}</td><td class="${cls}">${e.ok ? capture : "miss"}</td></tr>`;
   }).join("");
   const byVendor = {};
@@ -137,10 +136,7 @@ async function paint() {
     || "<tr><td colspan='2'>—</td></tr>";
   $("pile-hosts").innerHTML = (m.broker_hosts || []).slice(0, 10).map((h) => `<tr><td class="url">${h.host}</td><td>${h.hits}</td></tr>`).join("");
   const f = fp.data;
-  const rehearsalCopy = /rehearsal|Nothing left/i.test(f.presents_as || "");
-  $("fp-present").textContent = (diaryLive && rehearsalCopy)
-    ? "a tired phone. Chrome costume."
-    : (f.presents_as || "");
+  $("fp-present").textContent = f.presents_as || "";
   $("fp-ua").textContent = (f.user_agent || "") + " · " + (f.viewport || "");
 }
 

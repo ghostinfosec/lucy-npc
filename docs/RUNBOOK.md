@@ -21,10 +21,9 @@ Healthy: `awake: true` during her windows (7–9, 11–13, 17–23 in the person
 
 1. Desk, not wool.
 2. `sudo systemctl status lucy`
-3. One live beat: `sudo -u lucy /opt/lucy/.venv/bin/lucy-daemon --engine live_public --once --force-open --persona /etc/lucy/persona.json --log-dir /opt/lucy/logs`
+3. Open [http://127.0.0.1:8787/](http://127.0.0.1:8787/). The glass should show a look during her windows.
 4. Confirm the JSONL URL host is on `/etc/lucy/allowlist.json`.
-5. Optional: `tcpdump -i wlan0 -n port 443 | head` — you should see CDNs, not RFC1918.
-6. Then assemble. [HARDWARE.md](HARDWARE.md)
+5. Then assemble. [HARDWARE.md](HARDWARE.md)
 
 ## She's quiet
 
@@ -33,7 +32,7 @@ Healthy: `awake: true` during her windows (7–9, 11–13, 17–23 in the person
 | inactive unit | crash loop | `journalctl -u lucy -b` |
 | Chromium OOM | Pi 3 / 1GB | drop to `live_http` or a Pi 4 |
 | all `ok: false` | no DNS / captive portal | fix Wi‑Fi; Lucy will not click "I agree" |
-| asleep at noon | timezone / windows | persona `timezone` and `windows`; `--force-open` for one look |
+| asleep at noon | timezone / windows | persona `timezone` and `windows`; `--force-open` looks anyway |
 | status 401 | LAN token | `Authorization: Bearer …` from `/etc/lucy/env` |
 
 ## Sleep her (art / houseguest)

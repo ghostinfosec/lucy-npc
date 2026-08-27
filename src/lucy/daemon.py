@@ -232,17 +232,17 @@ def main() -> None:
     root = Path(__file__).resolve().parents[2]
     load_dotenv(root)
     parser = argparse.ArgumentParser(description="Lucy hatch daemon")
-    parser.add_argument("--engine", default=os.environ.get("LUCY_ENGINE", "local"))
+    parser.add_argument("--engine", default=os.environ.get("LUCY_ENGINE", "live_public"))
     parser.add_argument(
         "--persona",
         default=os.environ.get("LUCY_PERSONA", str(root / "data/personas/wool.json")),
     )
     parser.add_argument("--log-dir", default=os.environ.get("LUCY_LOG_DIR", str(root / "logs")))
-    parser.add_argument("--once", action="store_true")
+    parser.add_argument("--once", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument(
         "--force-open",
         action="store_true",
-        help="Ignore circadian sleep; open a surface (laptop test at 3am)",
+        help="Look even outside her hours",
     )
     parser.add_argument("--ui-only", action="store_true", help="Serve the hatch, no looks")
     parser.add_argument("--host", default=os.environ.get("LUCY_STATUS_HOST", "127.0.0.1"))

@@ -44,7 +44,7 @@ Consent **git** (`LUCY_AUTO_UPDATE=git`):
 
 Consent **signed**: fail closed. Cosign is not implemented.
 
-`lucy-update --from-dir` is first flash / tests. `--from-git` is a one-shot human pull.
+`lucy-update --from-dir` is first flash / tests. `--from-git` pulls when a human runs it.
 
 Origin cannot ask a Lucy to visit a URL, dump logs, or wake. Status HTTP is GET-only and local.
 
