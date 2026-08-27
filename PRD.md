@@ -13,7 +13,7 @@ Lucy is a stuffed animal that goes online so a real person does not have to look
 
 Live network. Real TLS. Real CDNs. Real scroll against public pages billions of phones already touch.
 
-A local simulator is a rehearsal. If the packets never leave the Pi, she is a prop.
+If she never reaches the public internet, she is a prop.
 
 ## Impersonation
 
@@ -59,8 +59,8 @@ Empty accounts and silent devices are a signature. Lucy fills ordinary hours wit
 
 | Engine | Where | Network | Notes |
 | --- | --- | --- | --- |
-| `local` | laptop, CI | none | Rehearsal. Same planner, fake fetches. |
-| `live_public` | Pi (art) | yes | Playwright Chromium, phone viewport, public URLs. |
+| `local` | CI | none | Same planner. No Chromium. |
+| `live_public` | laptop, Pi (art) | yes | Playwright Chromium, phone viewport, public URLs. Default. |
 | `live_http` | Pi Zero | yes | httpx GET/HEAD, real TLS, no JS. |
 | `live_session` | later | yes | Playwright + `storage_state.json`. Stub. |
 
@@ -81,7 +81,7 @@ Public pages. Default mix is ordinary: weather, Wikipedia, a YouTube search that
 
 - Overnight on a Pi: sleep gaps, clustered evening scroll.
 - Hatch at `:8787` says awake or asleep truthfully.
-- A packet capture on the LAN shows SNI/CDN names that match the plan.
+- Last look is a public host on the allowlist.
 - Grep for `OPENAI_API_KEY` finds a stub, not a call.
 
 ## Open

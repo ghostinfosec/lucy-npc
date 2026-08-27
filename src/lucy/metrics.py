@@ -1,4 +1,4 @@
-"""Summaries over the JSONL body log. Reads files; does not send packets."""
+"""Summaries over the JSONL body log. Reads files. No network."""
 
 from __future__ import annotations
 
@@ -55,7 +55,7 @@ def summarize(events: list[dict], limit_hosts: int = 24) -> dict:
     if live_capture:
         unit = f"{http_requests} fetches. {harvest_hits} taken."
     elif events:
-        unit = "Rehearsal. No fetches."
+        unit = "No fetches yet."
     else:
         unit = "No looks yet."
     return {

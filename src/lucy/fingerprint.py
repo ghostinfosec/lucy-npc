@@ -45,8 +45,8 @@ def describe(persona: Persona, engine: str) -> dict:
         casual = "No. httpx is not Chrome. Ads see a bot or empty JS."
         fraud = "Yes, immediately."
     elif engine == "local":
-        bucket = "rehearsal. Nothing left the machine."
-        casual = "No costume. No weather."
+        bucket = "desk. Chromium off."
+        casual = "No look."
         fraud = "n/a"
     else:
         bucket = "a tired phone. Chrome costume." if mobile else "desktop Chrome"
@@ -65,5 +65,4 @@ def describe(persona: Persona, engine: str) -> dict:
         "casual_ad_tags": casual,
         "fingerprint_and_fraud": fraud,
         "ip_note": "Home IP keeps the story. A VPS ends it.",
-        "not_packets": "Looks are fetches the browser made. Not packets. Not radio.",
     }

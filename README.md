@@ -23,18 +23,18 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -e ".[live]"
 playwright install chromium        # downloads a browser
 cp .env.template .env              # lucy-daemon reads .env from this folder
-lucy-daemon --engine live_public --persona data/personas/wool.json
+lucy-daemon
 ```
 
 Open [http://127.0.0.1:8787/](http://127.0.0.1:8787/). Loopback with an empty token has no login.
 
-She only looks **7–9, 11–13, and 17–23** in `America/Detroit`. Outside those hours she sleeps. For one look now: add `--force-open`. `--engine local` is rehearsal (no packets). `--once` runs one beat and exits (hatch dies with it).
+She looks **7–9, 11–13, and 17–23** in `America/Detroit`. Outside those hours she is still; the hatch stays up. `--force-open` looks anyway.
 
 ```bash
 make verify
 ```
 
-pytest, a checksummed slot flip, one local beat, LAN-bind refusal. Not a Pi. Not GitHub.
+pytest, a checksummed slot flip, LAN-bind refusal. Not a Pi.
 
 ## Pi
 

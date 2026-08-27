@@ -1,4 +1,4 @@
-"""Rehearsal engine. No network. Same planner, fake body."""
+"""CI engine. No network. Same planner, fake body."""
 
 from __future__ import annotations
 
