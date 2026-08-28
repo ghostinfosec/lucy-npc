@@ -40,9 +40,11 @@ Default: home Wi‑Fi, MAC as-is. Optional: USB ethernet to a boring switch. Luc
 
 ## First software flash
 
-### SD card from your laptop (recommended)
+### SD card from your laptop
 
-Flash Raspberry Pi OS with [Pi Imager](https://www.raspberrypi.com/software/), then **before ejecting the SD**:
+**v0.2 (recommended):** flash the pre-built **[Lucy OS image](pi/image/README.md)** from GitHub Releases — portal-first, no `git clone` on the Pi.
+
+**v0.1 (stock Pi OS):** flash Raspberry Pi OS with [Pi Imager](https://www.raspberrypi.com/software/), then **before ejecting the SD**:
 
 ```bash
 ./pi/flash.sh --boot /Volumes/bootfs --engine live_http

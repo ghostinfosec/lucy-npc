@@ -1,0 +1,66 @@
+name: build-image
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      release:
+        description: Pi OS suite (bookworm recommended for Zero W)
+        default: bookworm
+        type: choice
+        options:
+          - bookworm
+          - trixie
+
+permissions:
+  contents: write
+
+jobs:
+  lucy-zero-w-armhf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Lucy OS image (Pi Zero W / armhf)
+        id: pigen
+        uses: usimd/pi-gen-action@v1
+        env:
+          LUCY_SRC: ${{ github.workspace }}
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+        with:
+          image-name: lucy-zero-w
+          pi-gen-version: master
+          pi-gen-release: Lucy Ghost Zero
+          release: ${{ inputs.release || 'bookworm' }}
+          hostname: lucy-zero
+          username: pi
+          enable-ssh: 1
+          enable-cloud-init: 1
+          export-last-stage-only: true
+          increase-runner-disk-size: true
+          compression: xz
+          compression-level: 6
+          verbose-output: true
+          stage-list: stage0 stage1 stage2 pi/image/stage-lucy
+          docker-opts: >-
+            -e LUCY_SRC=${{ github.workspace }}
+            -e GITHUB_WORKSPACE=${{ github.workspace }}
+            -e LUCY_IMAGE_ENGINE=live_http
+
+      - name: Upload artifact (workflow dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lucy-zero-w-armhf
+          path: ${{ steps.pigen.outputs.image-path }}
+          retention-days: 14
+
+      - name: Publish GitHub Release asset
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ steps.pigen.outputs.image-path }}
+          generate_release_notes: true

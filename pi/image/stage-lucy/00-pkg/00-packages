@@ -1,0 +1,8 @@
+network-manager
+curl
+dnsmasq
+iptables
+python3
+python3-venv
+python3-pip
+ca-certificates
