@@ -37,6 +37,21 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache \
+            /usr/local/.ghcup /usr/share/swift /usr/local/share/powershell \
+            /usr/local/lib/node_modules /usr/share/miniconda /opt/az /opt/microsoft \
+            /usr/lib/google-cloud-sdk /usr/local/share/chromium /usr/local/julia* || true
+          sudo docker system prune -af 2>/dev/null || true
+          sudo apt-get clean
+          df -h
+
+      - name: Set up QEMU (armhf on x86_64 runner)
+        uses: docker/setup-qemu-action@v4
+        with:
+          platforms: arm
+
       - name: Build Lucy OS image (Pi Zero W / armhf)
         id: pigen
         uses: usimd/pi-gen-action@v1
