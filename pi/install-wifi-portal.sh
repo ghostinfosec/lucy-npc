@@ -69,16 +69,51 @@ disable_dhcpcd() {
   fi
 }
 
+find_bundled_debs_dir() {
+  local d
+  for d in /boot/firmware/lucy/debs /boot/lucy/debs; do
+    if [[ -d "$d" ]] && compgen -G "$d/*.deb" >/dev/null; then
+      echo "$d"
+      return 0
+    fi
+  done
+  return 1
+}
+
+install_offline_debs() {
+  local debs_dir
+  debs_dir="$(find_bundled_debs_dir)" || return 1
+  local deb_count
+  deb_count="$(find "$debs_dir" -maxdepth 1 -name '*.deb' | wc -l | tr -d ' ')"
+  say "installing NetworkManager from ${deb_count} bundled debs (${debs_dir})"
+  disable_dhcpcd
+  export DEBIAN_FRONTEND=noninteractive
+  shopt -s nullglob
+  local debs=( "$debs_dir"/*.deb )
+  dpkg -i "${debs[@]}" 2>/dev/null || true
+  apt-get install -f -y --no-download 2>/dev/null \
+    || apt-get install -f -y --no-download \
+    || err "offline deb install incomplete; re-flash SD with ./pi/flash.sh (bundles debs)"
+  systemctl enable NetworkManager
+  systemctl start NetworkManager
+  command -v NetworkManager >/dev/null 2>&1 || command -v nmcli >/dev/null 2>&1 \
+    || [[ -x /usr/sbin/NetworkManager ]]
+}
+
 activate_network_manager() {
   if [[ "$(service_load_state NetworkManager 2>/dev/null || echo not-found)" == "not-found" ]]; then
     confirm
-    say "installing NetworkManager"
-    export DEBIAN_FRONTEND=noninteractive
-    apt-get update
-    apt-get install -y -d network-manager curl
-    disable_dhcpcd
-    apt-get install -y network-manager curl
-    apt-get clean
+    if install_offline_debs; then
+      say "NetworkManager installed from SD debs"
+    else
+      say "no offline debs on SD; installing NetworkManager via apt (needs internet)"
+      export DEBIAN_FRONTEND=noninteractive
+      apt-get update
+      apt-get install -y -d network-manager curl
+      disable_dhcpcd
+      apt-get install -y network-manager curl
+      apt-get clean
+    fi
   elif [[ "$(service_active_state NetworkManager)" != "active" ]]; then
     confirm
     disable_dhcpcd

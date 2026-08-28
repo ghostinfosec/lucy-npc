@@ -21,6 +21,7 @@ LUCY_ENGINE="${LUCY_ENGINE:-live_http}"
 LUCY_REPO="${LUCY_REPO:-https://github.com/ghostinfosec/lucy-npc.git}"
 WIFI_PORTAL=1
 BUNDLE_WIFI=1
+BUNDLE_DEBS=1
 ENABLE_SSH=1
 CONSENT_AUTO_UPDATE=0
 UPDATE_ORIGIN="ghostinfosec/lucy-npc"
@@ -41,6 +42,7 @@ usage: ./pi/flash.sh --boot /Volumes/bootfs [options]
   --repo URL            Git clone URL (default: ghostinfosec/lucy-npc)
   --no-wifi-portal      Skip bundling portal stack on SD
   --no-bundle-wifi      Do not download wifi-connect tarball to SD
+  --no-bundle-debs      Skip bundling NetworkManager debs (~26 MB)
   --consent-auto-update Opt in to git pull auto-updates on first install
   --origin owner/repo   Update origin slug (default: ghostinfosec/lucy-npc)
   -h, --help            Show this help
@@ -68,6 +70,7 @@ while [[ $# -gt 0 ]]; do
     --repo) LUCY_REPO="$2"; shift 2 ;;
     --no-wifi-portal) WIFI_PORTAL=0; shift ;;
     --no-bundle-wifi) BUNDLE_WIFI=0; shift ;;
+    --no-bundle-debs) BUNDLE_DEBS=0; shift ;;
     --consent-auto-update) CONSENT_AUTO_UPDATE=1; shift ;;
     --origin) UPDATE_ORIGIN="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
@@ -127,6 +130,16 @@ EOF
   chmod 0600 "$LUCY_BOOT/lucy-flash.env"
 }
 
+bundle_os_debs() {
+  [[ "$BUNDLE_DEBS" -eq 1 && "$WIFI_PORTAL" -eq 1 ]] || return 0
+  echo "bundling NetworkManager debs for offline first boot (~26 MB, one-time download)..."
+  if ! bash "$PI_DIR/bundle-debs.sh" "$LUCY_BOOT/debs"; then
+    echo "error: could not bundle NetworkManager debs" >&2
+    exit 1
+  fi
+  find "$LUCY_BOOT/debs" -name '._*' -delete 2>/dev/null || true
+}
+
 bundle_wifi_connect() {
   [[ "$BUNDLE_WIFI" -eq 1 && "$WIFI_PORTAL" -eq 1 ]] || return 0
   if [[ -f "$LUCY_BOOT/wifi-connect-rpi.tar.gz" ]]; then
@@ -166,6 +179,7 @@ EOF
 copy_pi_files
 write_flash_env
 bundle_wifi_connect
+bundle_os_debs
 write_firstrun
 
 cat <<EOF

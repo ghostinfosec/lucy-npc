@@ -67,11 +67,12 @@ boot/lucy/
   install-wifi-portal.sh    NetworkManager + wifi-connect
   wifi-watch.sh             connectivity watchdog
   wifi-connect-rpi.tar.gz   offline portal binary (downloaded at flash time)
+  debs/                     NetworkManager + deps (~26 MB, offline apt)
   *.service / *.timer       systemd units
 boot/firstrun.sh            chains into lucy-firstrun.sh
 ```
 
-`flash.sh` pins wifi-connect **v4.4.6** (`linux-rpi` tarball) for offline portal first boot. Balena removed that combined asset from current releases; without the bundle, a headless Pi with no WiFi cannot open `Lucy-Setup`.
+`flash.sh` pins wifi-connect **v4.4.6** (`linux-rpi` tarball) and bundles **NetworkManager debs** from Debian bookworm armhf so portal-first flash works with no WiFi and no internet on the Pi. Without `debs/`, first boot needs network for `apt install network-manager` before `Lucy-Setup` can appear.
 
 On macOS, `flash.sh` sets `COPYFILE_DISABLE=1` so AppleDouble `._*` sidecars are not copied onto the FAT boot partition.
 
