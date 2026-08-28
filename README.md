@@ -54,7 +54,8 @@ See [docs/RUNBOOK.md](docs/RUNBOOK.md), [docs/ASVS-L1.md](docs/ASVS-L1.md).
 
 - [PRD](PRD.md)
 - [Hardware](docs/HARDWARE.md)
-- [Flash SD + WiFi portal](docs/FLASH.md)
+- [Flash SD + WiFi portal](docs/FLASH.md) — stock Pi OS + `./pi/flash.sh`
+- [Lucy OS image](pi/image/README.md) — pre-baked `.img.xz` (v0.2)
 - [Runbook](docs/RUNBOOK.md)
 - [Hatch](docs/WEBUI.md)
 - [Harvest](docs/HARVEST.md)
