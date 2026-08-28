@@ -52,6 +52,14 @@ jobs:
         with:
           platforms: arm
 
+      - name: Symlink qemu-arm-static for pi-gen container binfmt
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static binfmt-support
+          sudo ln -sf /usr/bin/qemu-arm-static /usr/local/bin/qemu-arm
+          command -v qemu-arm
+          ls -la /usr/local/bin/qemu-arm /usr/bin/qemu-arm-static
+
       - name: Build Lucy OS image (Pi Zero W / armhf)
         id: pigen
         uses: usimd/pi-gen-action@v1
@@ -60,7 +68,7 @@ jobs:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         with:
           image-name: lucy-zero-w
-          pi-gen-version: master
+          pi-gen-version: bookworm
           pi-gen-release: Lucy Ghost Zero
           release: ${{ inputs.release || 'bookworm' }}
           hostname: lucy-zero
