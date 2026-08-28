@@ -54,6 +54,7 @@ See [docs/RUNBOOK.md](docs/RUNBOOK.md), [docs/ASVS-L1.md](docs/ASVS-L1.md).
 
 - [PRD](PRD.md)
 - [Hardware](docs/HARDWARE.md)
+- [Flash SD + WiFi portal](docs/FLASH.md)
 - [Runbook](docs/RUNBOOK.md)
 - [Hatch](docs/WEBUI.md)
 - [Harvest](docs/HARVEST.md)

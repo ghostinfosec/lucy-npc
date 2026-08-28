@@ -1,0 +1,15 @@
+[Unit]
+Description=Lucy WiFi setup portal (wifi-connect)
+After=NetworkManager.service
+Wants=NetworkManager.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/wifi-connect --portal-ssid Lucy-Setup --portal-passphrase "" --portal-listening-port 80
+Restart=no
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=lucy-wifi-portal
+
+[Install]
+WantedBy=multi-user.target

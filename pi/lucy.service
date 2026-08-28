@@ -10,7 +10,7 @@ Group=lucy
 WorkingDirectory=/opt/lucy/current
 EnvironmentFile=-/etc/lucy/env
 Environment=PYTHONPATH=/opt/lucy/current/src
-ExecStart=/opt/lucy/.venv/bin/python -m lucy.daemon --engine live_public --persona /etc/lucy/persona.json --log-dir /opt/lucy/logs
+ExecStart=/opt/lucy/.venv/bin/python -m lucy.daemon --persona /etc/lucy/persona.json --log-dir /opt/lucy/logs
 Restart=always
 RestartSec=8
 NoNewPrivileges=yes
