@@ -49,7 +49,7 @@ if [[ -n "${LUCY_SSH_KEY:-}" && -n "${LUCY_USER:-}" ]]; then
   fi
 fi
 
-for script in first-boot.sh install-wifi-portal.sh wifi-watch.sh; do
+for script in first-boot.sh install-wifi-portal.sh wifi-watch.sh wifi-connect-release.sh; do
   [[ -f "$LUCY_DIR/$script" ]] && install -m 0755 "$LUCY_DIR/$script" "/usr/local/lib/lucy/$script"
 done
 for unit in lucy-first-boot.service lucy-wifi-portal.service lucy-connect-watch.service lucy-connect-watch.timer; do

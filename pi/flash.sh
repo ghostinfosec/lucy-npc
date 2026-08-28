@@ -3,7 +3,12 @@
 # Side effects: writes to the mounted Raspberry Pi boot partition only.
 set -euo pipefail
 
+# Avoid macOS AppleDouble (._*) sidecars on the FAT boot partition.
+export COPYFILE_DISABLE=1
+
 PI_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=wifi-connect-release.sh
+source "$PI_DIR/wifi-connect-release.sh"
 BOOT=""
 SSID=""
 WIFI_PASS=""
@@ -16,6 +21,7 @@ LUCY_ENGINE="${LUCY_ENGINE:-live_http}"
 LUCY_REPO="${LUCY_REPO:-https://github.com/ghostinfosec/lucy-npc.git}"
 WIFI_PORTAL=1
 BUNDLE_WIFI=1
+BUNDLE_DEBS=1
 ENABLE_SSH=1
 CONSENT_AUTO_UPDATE=0
 UPDATE_ORIGIN="ghostinfosec/lucy-npc"
@@ -36,6 +42,7 @@ usage: ./pi/flash.sh --boot /Volumes/bootfs [options]
   --repo URL            Git clone URL (default: ghostinfosec/lucy-npc)
   --no-wifi-portal      Skip bundling portal stack on SD
   --no-bundle-wifi      Do not download wifi-connect tarball to SD
+  --no-bundle-debs      Skip bundling NetworkManager debs (~26 MB)
   --consent-auto-update Opt in to git pull auto-updates on first install
   --origin owner/repo   Update origin slug (default: ghostinfosec/lucy-npc)
   -h, --help            Show this help
@@ -63,6 +70,7 @@ while [[ $# -gt 0 ]]; do
     --repo) LUCY_REPO="$2"; shift 2 ;;
     --no-wifi-portal) WIFI_PORTAL=0; shift ;;
     --no-bundle-wifi) BUNDLE_WIFI=0; shift ;;
+    --no-bundle-debs) BUNDLE_DEBS=0; shift ;;
     --consent-auto-update) CONSENT_AUTO_UPDATE=1; shift ;;
     --origin) UPDATE_ORIGIN="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
@@ -85,9 +93,11 @@ mkdir -p "$LUCY_BOOT"
 copy_pi_files() {
   local f
   for f in lucy-firstrun.sh first-boot.sh install-wifi-portal.sh wifi-watch.sh \
+    wifi-connect-release.sh \
     lucy-first-boot.service lucy-wifi-portal.service lucy-connect-watch.service lucy-connect-watch.timer; do
     install -m 0755 "$PI_DIR/$f" "$LUCY_BOOT/$f"
   done
+  find "$LUCY_BOOT" -name '._*' -delete 2>/dev/null || true
 }
 
 write_flash_env() {
@@ -120,25 +130,36 @@ EOF
   chmod 0600 "$LUCY_BOOT/lucy-flash.env"
 }
 
+bundle_os_debs() {
+  [[ "$BUNDLE_DEBS" -eq 1 && "$WIFI_PORTAL" -eq 1 ]] || return 0
+  echo "bundling NetworkManager debs for offline first boot (~26 MB, one-time download)..."
+  if ! bash "$PI_DIR/bundle-debs.sh" "$LUCY_BOOT/debs"; then
+    echo "error: could not bundle NetworkManager debs" >&2
+    exit 1
+  fi
+  find "$LUCY_BOOT/debs" -name '._*' -delete 2>/dev/null || true
+}
+
 bundle_wifi_connect() {
   [[ "$BUNDLE_WIFI" -eq 1 && "$WIFI_PORTAL" -eq 1 ]] || return 0
   if [[ -f "$LUCY_BOOT/wifi-connect-rpi.tar.gz" ]]; then
     echo "wifi-connect bundle already on SD"
     return 0
   fi
-  echo "downloading wifi-connect rpi bundle (for offline first boot)..."
   local url
-  url="$(curl -sfL https://api.github.com/repos/balena-os/wifi-connect/releases/latest \
-    | grep -hoE 'https://[^"]+rpi\.tar\.gz' | head -1)" || true
-  [[ -n "$url" ]] || { echo "warning: could not download wifi-connect bundle" >&2; return 0; }
-  curl -sfL "$url" -o "$LUCY_BOOT/wifi-connect-rpi.tar.gz"
+  url="$(wifi_connect_rpi_bundle_url)"
+  echo "downloading wifi-connect rpi bundle (${WFC_RPI_RELEASE}) for offline first boot..."
+  if ! curl -sfL "$url" -o "$LUCY_BOOT/wifi-connect-rpi.tar.gz"; then
+    echo "error: could not download wifi-connect bundle from ${url}" >&2
+    exit 1
+  fi
 }
 
 write_firstrun() {
   local target="$BOOT/firstrun.sh"
   local hook='for _b in /boot/firmware /boot; do [ -x "$_b/lucy/lucy-firstrun.sh" ] && "$_b/lucy/lucy-firstrun.sh" && break; done'
   if [[ -f "$target" ]] && ! grep -Fq 'lucy/lucy-firstrun.sh' "$target" 2>/dev/null; then
-    cp "$target" "$BOOT/firstrun.sh.lucy-bak"
+    COPYFILE_DISABLE=1 cp "$target" "$BOOT/firstrun.sh.lucy-bak"
     {
       cat "$target"
       echo ""
@@ -158,6 +179,7 @@ EOF
 copy_pi_files
 write_flash_env
 bundle_wifi_connect
+bundle_os_debs
 write_firstrun
 
 cat <<EOF

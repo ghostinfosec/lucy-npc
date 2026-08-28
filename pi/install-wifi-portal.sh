@@ -16,11 +16,11 @@ if [[ ! -f "$PI_DIR/lucy-wifi-portal.service" ]]; then
     fi
   done
 fi
-WFC_REPO="${WFC_REPO:-balena-os/wifi-connect}"
+# shellcheck source=wifi-connect-release.sh
+source "$PI_DIR/wifi-connect-release.sh"
 WFC_INSTALL_ROOT="${WFC_INSTALL_ROOT:-/usr/local}"
 INSTALL_BIN_DIR="${WFC_INSTALL_ROOT}/sbin"
 INSTALL_UI_DIR="${WFC_INSTALL_ROOT}/share/wifi-connect/ui"
-RELEASE_URL="https://api.github.com/repos/${WFC_REPO}/releases/latest"
 CONFIRMATION=true
 BUNDLE=""
 
@@ -69,16 +69,51 @@ disable_dhcpcd() {
   fi
 }
 
+find_bundled_debs_dir() {
+  local d
+  for d in /boot/firmware/lucy/debs /boot/lucy/debs; do
+    if [[ -d "$d" ]] && compgen -G "$d/*.deb" >/dev/null; then
+      echo "$d"
+      return 0
+    fi
+  done
+  return 1
+}
+
+install_offline_debs() {
+  local debs_dir
+  debs_dir="$(find_bundled_debs_dir)" || return 1
+  local deb_count
+  deb_count="$(find "$debs_dir" -maxdepth 1 -name '*.deb' | wc -l | tr -d ' ')"
+  say "installing NetworkManager from ${deb_count} bundled debs (${debs_dir})"
+  disable_dhcpcd
+  export DEBIAN_FRONTEND=noninteractive
+  shopt -s nullglob
+  local debs=( "$debs_dir"/*.deb )
+  dpkg -i "${debs[@]}" 2>/dev/null || true
+  apt-get install -f -y --no-download 2>/dev/null \
+    || apt-get install -f -y --no-download \
+    || err "offline deb install incomplete; re-flash SD with ./pi/flash.sh (bundles debs)"
+  systemctl enable NetworkManager
+  systemctl start NetworkManager
+  command -v NetworkManager >/dev/null 2>&1 || command -v nmcli >/dev/null 2>&1 \
+    || [[ -x /usr/sbin/NetworkManager ]]
+}
+
 activate_network_manager() {
   if [[ "$(service_load_state NetworkManager 2>/dev/null || echo not-found)" == "not-found" ]]; then
     confirm
-    say "installing NetworkManager"
-    export DEBIAN_FRONTEND=noninteractive
-    apt-get update
-    apt-get install -y -d network-manager curl
-    disable_dhcpcd
-    apt-get install -y network-manager curl
-    apt-get clean
+    if install_offline_debs; then
+      say "NetworkManager installed from SD debs"
+    else
+      say "no offline debs on SD; installing NetworkManager via apt (needs internet)"
+      export DEBIAN_FRONTEND=noninteractive
+      apt-get update
+      apt-get install -y -d network-manager curl
+      disable_dhcpcd
+      apt-get install -y network-manager curl
+      apt-get clean
+    fi
   elif [[ "$(service_active_state NetworkManager)" != "active" ]]; then
     confirm
     disable_dhcpcd
@@ -101,10 +136,10 @@ install_wifi_connect() {
     say "extracting bundled wifi-connect from ${BUNDLE}"
     tar -xzf "$BUNDLE" -C "$tmp"
   else
-    say "downloading wifi-connect release"
-    arch_url="$(curl -sfL "$RELEASE_URL" | grep -hoE 'https://[^"]+rpi\.tar\.gz' | head -1)"
-    [[ -n "$arch_url" ]] || err "could not find rpi.tar.gz release asset"
-    curl -sfL "$arch_url" | tar -xz -C "$tmp"
+    local url
+    url="$(wifi_connect_rpi_bundle_url)"
+    say "downloading wifi-connect release (${WFC_RPI_RELEASE})"
+    curl -sfL "$url" | tar -xz -C "$tmp"
   fi
 
   install -m 0755 "$tmp/wifi-connect" "$INSTALL_BIN_DIR/wifi-connect"
