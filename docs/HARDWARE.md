@@ -6,7 +6,7 @@ Lucy is a Raspberry Pi and a dead phone in a stuffed animal. The animal is the s
 
 | Part | Why | Notes |
 | --- | --- | --- |
-| Raspberry Pi 4 (2GB+) or Pi 5 | Live Chromium | Pi Zero 2W only if you accept `live_http` (no JS) |
+| Raspberry Pi 4 (2GB+) or Pi 5 | Live Chromium | Pi Zero W / Zero 2W: `live_http` only (no JS) |
 | Official USB-C PSU | Don't starve Chromium | Cheap chargers reboot her at 2am |
 | microSD 32GB (A2) | OS + slots | Keep a clone card labeled *previous* |
 | Heatsink / small fan | Playwright cooks a Pi | |
@@ -15,7 +15,7 @@ Lucy is a Raspberry Pi and a dead phone in a stuffed animal. The animal is the s
 | USB ethernet adapter (optional) | Skip home Wi‑Fi identity | |
 | Stuffed animal, ~30–40cm | The body | Open a back seam, not the face |
 | Needle, thread, velcro patch | Service hatch | You will open her again |
-| Raspberry Pi OS (64-bit) | Bookworm or newer | Desktop image not required |
+| Raspberry Pi OS Lite | Bookworm or newer | **32-bit** for Pi Zero W; 64-bit for Pi 4+ |
 
 ## Assembly
 
@@ -36,7 +36,21 @@ Leave a thumb of air around the SoC. If she thermal-throttles, sessions look lik
 
 Default: home Wi‑Fi, MAC as-is. Optional: USB ethernet to a boring switch. Lucy's art is *ordinary* traffic. Do not put her on a VPN that makes her look like a datacenter.
 
+**Setup portal:** if WiFi fails or was never configured, she broadcasts open AP **`Lucy-Setup`** (Balena wifi-connect). See [FLASH.md](FLASH.md).
+
 ## First software flash
+
+### SD card from your laptop (recommended)
+
+Flash Raspberry Pi OS with [Pi Imager](https://www.raspberrypi.com/software/), then **before ejecting the SD**:
+
+```bash
+./pi/flash.sh --boot /Volumes/bootfs --engine live_http
+```
+
+Optional WiFi/token injection, portal recovery, and Pi Zero notes: [FLASH.md](FLASH.md).
+
+### Manual (Pi already on the LAN)
 
 On the Pi, after Raspberry Pi OS is up and on the LAN. This folder is the git root.
 

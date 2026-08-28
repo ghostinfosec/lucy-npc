@@ -8,13 +8,37 @@ PREFIX="${LUCY_PREFIX:-/opt/lucy}"
 STATE="${LUCY_STATE_DIR:-/etc/lucy}"
 CONSENT=0
 ORIGIN="${LUCY_UPDATE_ORIGIN:-}"
+WIFI_PORTAL=0
+ENGINE=""
+LUCY_TOKEN=""
+SKIP_PLAYWRIGHT=0
 
 for arg in "$@"; do
   case "$arg" in
     --consent-auto-update|--yes|-y) CONSENT=1 ;;
     --origin=*) ORIGIN="${arg#--origin=}" ;;
+    --wifi-portal) WIFI_PORTAL=1 ;;
+    --engine=*) ENGINE="${arg#--engine=}" ;;
+    --lucy-token=*) LUCY_TOKEN="${arg#--lucy-token=}" ;;
+    --lucy-token) ;;
+    --skip-playwright) SKIP_PLAYWRIGHT=1 ;;
   esac
 done
+
+prev=""
+for arg in "$@"; do
+  if [[ "$prev" == "--lucy-token" ]]; then
+    LUCY_TOKEN="$arg"
+  fi
+  prev="$arg"
+done
+
+if [[ -z "$ENGINE" && -n "${LUCY_ENGINE:-}" ]]; then
+  ENGINE="$LUCY_ENGINE"
+fi
+if [[ "$ENGINE" == "live_http" ]]; then
+  SKIP_PLAYWRIGHT=1
+fi
 
 if [[ -z "$ORIGIN" ]] && git -C "$ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   ORIGIN="$(git -C "$ROOT" remote get-url origin 2>/dev/null || true)"
@@ -38,7 +62,7 @@ export DEBIAN_FRONTEND=noninteractive
 if command -v apt-get >/dev/null 2>&1; then
   sudo apt-get update
   sudo apt-get install -y --no-install-recommends \
-    python3 python3-venv python3-pip git rsync ca-certificates
+    python3 python3-venv python3-pip git rsync ca-certificates curl
 fi
 
 id -u lucy >/dev/null 2>&1 || sudo useradd --system --home /var/lib/lucy --shell /usr/sbin/nologin lucy
@@ -52,6 +76,12 @@ if [[ ! -f "$STATE/env" ]]; then
   sudo sed -i 's|^LUCY_LOG_DIR=.*|LUCY_LOG_DIR=/opt/lucy/logs|' "$STATE/env"
   sudo sed -i 's|^PLAYWRIGHT_BROWSERS_PATH=.*|PLAYWRIGHT_BROWSERS_PATH=/opt/lucy/ms-playwright|' "$STATE/env" || true
 fi
+if [[ -n "$ENGINE" ]]; then
+  sudo sed -i "s|^LUCY_ENGINE=.*|LUCY_ENGINE=${ENGINE}|" "$STATE/env"
+fi
+if [[ -n "$LUCY_TOKEN" ]]; then
+  sudo sed -i "s|^LUCY_STATUS_TOKEN=.*|LUCY_STATUS_TOKEN=${LUCY_TOKEN}|" "$STATE/env"
+fi
 if [[ ! -f "$STATE/persona.json" ]]; then
   sudo cp "$ROOT/data/personas/wool.json" "$STATE/persona.json"
 fi
@@ -59,11 +89,15 @@ sudo cp "$ROOT/data/allowlist.json" "$STATE/allowlist.json"
 
 cd "$PREFIX/current"
 sudo python3 -m venv "$PREFIX/.venv"
-sudo "$PREFIX/.venv/bin/pip" install -e ".[live]"
-export PLAYWRIGHT_BROWSERS_PATH="${PLAYWRIGHT_BROWSERS_PATH:-/opt/lucy/ms-playwright}"
-sudo env PLAYWRIGHT_BROWSERS_PATH="$PLAYWRIGHT_BROWSERS_PATH" "$PREFIX/.venv/bin/playwright" install chromium
-if command -v apt-get >/dev/null 2>&1; then
-  sudo env PLAYWRIGHT_BROWSERS_PATH="$PLAYWRIGHT_BROWSERS_PATH" "$PREFIX/.venv/bin/playwright" install-deps chromium || true
+if [[ "$SKIP_PLAYWRIGHT" -eq 1 ]]; then
+  sudo "$PREFIX/.venv/bin/pip" install -e . "httpx==0.28.1"
+else
+  sudo "$PREFIX/.venv/bin/pip" install -e ".[live]"
+  export PLAYWRIGHT_BROWSERS_PATH="${PLAYWRIGHT_BROWSERS_PATH:-/opt/lucy/ms-playwright}"
+  sudo env PLAYWRIGHT_BROWSERS_PATH="$PLAYWRIGHT_BROWSERS_PATH" "$PREFIX/.venv/bin/playwright" install chromium
+  if command -v apt-get >/dev/null 2>&1; then
+    sudo env PLAYWRIGHT_BROWSERS_PATH="$PLAYWRIGHT_BROWSERS_PATH" "$PREFIX/.venv/bin/playwright" install-deps chromium || true
+  fi
 fi
 
 if [[ "$CONSENT" -eq 1 ]]; then
@@ -89,5 +123,8 @@ if [[ "$CONSENT" -eq 1 ]]; then
 else
   sudo systemctl disable --now lucy-update.timer 2>/dev/null || true
   echo "auto-updates OFF. later: sudo $ROOT/pi/consent-updates.sh owner/repo"
+fi
+if [[ "$WIFI_PORTAL" -eq 1 ]]; then
+  sudo bash "$ROOT/pi/install-wifi-portal.sh" -y
 fi
 sudo systemctl --no-pager --full status lucy.service || true

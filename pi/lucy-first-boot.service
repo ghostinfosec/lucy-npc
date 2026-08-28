@@ -1,0 +1,13 @@
+[Unit]
+Description=Lucy first boot — WiFi portal bootstrap and install
+After=NetworkManager.service
+Wants=NetworkManager.service
+ConditionPathExists=!/var/lib/lucy/first-boot.done
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/lib/lucy/first-boot.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

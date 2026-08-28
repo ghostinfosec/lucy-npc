@@ -1,0 +1,10 @@
+[Unit]
+Description=Lucy connectivity watch timer
+
+[Timer]
+OnBootSec=90
+OnUnitActiveSec=45
+AccuracySec=10
+
+[Install]
+WantedBy=timers.target

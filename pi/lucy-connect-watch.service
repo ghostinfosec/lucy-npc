@@ -1,0 +1,8 @@
+[Unit]
+Description=Lucy connectivity watch (may start WiFi portal)
+After=NetworkManager.service
+Wants=NetworkManager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/lib/lucy/wifi-watch.sh
