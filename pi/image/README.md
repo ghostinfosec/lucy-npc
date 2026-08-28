@@ -29,13 +29,11 @@ Images are built in GitHub Actions with [pi-gen](https://github.com/RPi-Distro/p
 
 **On tag `v*`** or **workflow dispatch** → `.github/workflows/build-image.yml`
 
-Local build (requires Debian/Ubuntu + Docker, ~30–60 min):
+Local build (requires **Linux + Docker**, ~30–60 min):
 
 ```bash
-git clone https://github.com/RPi-Distro/pi-gen.git
-# armhf: pi-gen master branch
-export LUCY_SRC="$(pwd)"
-# Copy stage-lucy into pi-gen and append to STAGE_LIST — see workflow for exact flags.
+bash pi/image/test-local.sh          # smoke only (Mac OK)
+bash pi/image/build-local.sh         # full image (Docker required)
 ```
 
 ### Layout

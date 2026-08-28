@@ -3,6 +3,11 @@ name: build-image
 on:
   push:
     tags: ["v*"]
+  pull_request:
+    paths:
+      - "pi/image/**"
+      - "pi/wifi-connect-release.sh"
+      - ".github/workflows/build-image.yml"
   workflow_dispatch:
     inputs:
       release:
@@ -17,7 +22,16 @@ permissions:
   contents: write
 
 jobs:
+  smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Image stage smoke test
+        run: bash pi/image/test-local.sh
+
   lucy-zero-w-armhf:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
