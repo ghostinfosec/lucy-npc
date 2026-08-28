@@ -71,6 +71,10 @@ boot/lucy/
 boot/firstrun.sh            chains into lucy-firstrun.sh
 ```
 
+`flash.sh` pins wifi-connect **v4.4.6** (`linux-rpi` tarball) for offline portal first boot. Balena removed that combined asset from current releases; without the bundle, a headless Pi with no WiFi cannot open `Lucy-Setup`.
+
+On macOS, `flash.sh` sets `COPYFILE_DISABLE=1` so AppleDouble `._*` sidecars are not copied onto the FAT boot partition.
+
 ## Portal recovery (steady state)
 
 After install, `lucy-connect-watch.timer` runs every **45 seconds**. If connectivity fails **3 times in a row** (~2 minutes), **`Lucy-Setup`** comes back until you reconfigure WiFi.

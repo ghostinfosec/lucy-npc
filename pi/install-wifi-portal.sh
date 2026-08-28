@@ -16,11 +16,11 @@ if [[ ! -f "$PI_DIR/lucy-wifi-portal.service" ]]; then
     fi
   done
 fi
-WFC_REPO="${WFC_REPO:-balena-os/wifi-connect}"
+# shellcheck source=wifi-connect-release.sh
+source "$PI_DIR/wifi-connect-release.sh"
 WFC_INSTALL_ROOT="${WFC_INSTALL_ROOT:-/usr/local}"
 INSTALL_BIN_DIR="${WFC_INSTALL_ROOT}/sbin"
 INSTALL_UI_DIR="${WFC_INSTALL_ROOT}/share/wifi-connect/ui"
-RELEASE_URL="https://api.github.com/repos/${WFC_REPO}/releases/latest"
 CONFIRMATION=true
 BUNDLE=""
 
@@ -101,10 +101,10 @@ install_wifi_connect() {
     say "extracting bundled wifi-connect from ${BUNDLE}"
     tar -xzf "$BUNDLE" -C "$tmp"
   else
-    say "downloading wifi-connect release"
-    arch_url="$(curl -sfL "$RELEASE_URL" | grep -hoE 'https://[^"]+rpi\.tar\.gz' | head -1)"
-    [[ -n "$arch_url" ]] || err "could not find rpi.tar.gz release asset"
-    curl -sfL "$arch_url" | tar -xz -C "$tmp"
+    local url
+    url="$(wifi_connect_rpi_bundle_url)"
+    say "downloading wifi-connect release (${WFC_RPI_RELEASE})"
+    curl -sfL "$url" | tar -xz -C "$tmp"
   fi
 
   install -m 0755 "$tmp/wifi-connect" "$INSTALL_BIN_DIR/wifi-connect"

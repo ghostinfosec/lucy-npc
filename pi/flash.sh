@@ -3,7 +3,12 @@
 # Side effects: writes to the mounted Raspberry Pi boot partition only.
 set -euo pipefail
 
+# Avoid macOS AppleDouble (._*) sidecars on the FAT boot partition.
+export COPYFILE_DISABLE=1
+
 PI_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=wifi-connect-release.sh
+source "$PI_DIR/wifi-connect-release.sh"
 BOOT=""
 SSID=""
 WIFI_PASS=""
@@ -85,9 +90,11 @@ mkdir -p "$LUCY_BOOT"
 copy_pi_files() {
   local f
   for f in lucy-firstrun.sh first-boot.sh install-wifi-portal.sh wifi-watch.sh \
+    wifi-connect-release.sh \
     lucy-first-boot.service lucy-wifi-portal.service lucy-connect-watch.service lucy-connect-watch.timer; do
     install -m 0755 "$PI_DIR/$f" "$LUCY_BOOT/$f"
   done
+  find "$LUCY_BOOT" -name '._*' -delete 2>/dev/null || true
 }
 
 write_flash_env() {
@@ -126,19 +133,20 @@ bundle_wifi_connect() {
     echo "wifi-connect bundle already on SD"
     return 0
   fi
-  echo "downloading wifi-connect rpi bundle (for offline first boot)..."
   local url
-  url="$(curl -sfL https://api.github.com/repos/balena-os/wifi-connect/releases/latest \
-    | grep -hoE 'https://[^"]+rpi\.tar\.gz' | head -1)" || true
-  [[ -n "$url" ]] || { echo "warning: could not download wifi-connect bundle" >&2; return 0; }
-  curl -sfL "$url" -o "$LUCY_BOOT/wifi-connect-rpi.tar.gz"
+  url="$(wifi_connect_rpi_bundle_url)"
+  echo "downloading wifi-connect rpi bundle (${WFC_RPI_RELEASE}) for offline first boot..."
+  if ! curl -sfL "$url" -o "$LUCY_BOOT/wifi-connect-rpi.tar.gz"; then
+    echo "error: could not download wifi-connect bundle from ${url}" >&2
+    exit 1
+  fi
 }
 
 write_firstrun() {
   local target="$BOOT/firstrun.sh"
   local hook='for _b in /boot/firmware /boot; do [ -x "$_b/lucy/lucy-firstrun.sh" ] && "$_b/lucy/lucy-firstrun.sh" && break; done'
   if [[ -f "$target" ]] && ! grep -Fq 'lucy/lucy-firstrun.sh' "$target" 2>/dev/null; then
-    cp "$target" "$BOOT/firstrun.sh.lucy-bak"
+    COPYFILE_DISABLE=1 cp "$target" "$BOOT/firstrun.sh.lucy-bak"
     {
       cat "$target"
       echo ""
