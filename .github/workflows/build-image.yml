@@ -53,7 +53,7 @@ jobs:
           enable-ssh: 1
           enable-cloud-init: 1
           export-last-stage-only: true
-          increase-runner-disk-size: true
+          increase-runner-disk-size: false
           compression: xz
           compression-level: 6
           verbose-output: true
