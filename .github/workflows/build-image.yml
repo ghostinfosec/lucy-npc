@@ -82,6 +82,7 @@ jobs:
           verbose-output: true
           stage-list: stage0 stage1 stage2 pi/image/stage-lucy
           docker-opts: >-
+            -v ${{ github.workspace }}:${{ github.workspace }}:ro
             -e LUCY_SRC=${{ github.workspace }}
             -e GITHUB_WORKSPACE=${{ github.workspace }}
             -e LUCY_IMAGE_ENGINE=live_http

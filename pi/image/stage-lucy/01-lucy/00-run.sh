@@ -7,3 +7,4 @@ rsync -a "${LUCY_SRC}/" "${ROOTFS_DIR}/opt/lucy-build/" \
   --exclude pi-gen \
   --exclude work \
   --exclude deploy
+test -f "${ROOTFS_DIR}/opt/lucy-build/pi/image/chroot-install.sh"
